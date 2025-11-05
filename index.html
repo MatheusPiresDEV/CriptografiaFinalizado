@@ -31,9 +31,13 @@
                 <textarea id="input-text" placeholder="Exemplo: Olá Mundo!" rows="4"></textarea>
             </div>
             <div class="input-group">
+                <label for="shift-value">Deslocamento (para Cifra de César):</label>
+                <input type="number" id="shift-value" value="3" min="-25" max="25">
+            </div>
+            <div class="input-group">
                 <label for="encryption-type">Tipo de Criptografia:</label>
                 <select id="encryption-type">
-                    <option value="caesar">Cifra de César tradicional (deslocamento de 3)</option>
+                    <option value="caesar">Cifra de César tradicional</option>
                     <option value="random">Criptografia aleatória</option>
                 </select>
             </div>
@@ -51,9 +55,13 @@
                 <textarea id="decrypt-input-text" placeholder="Exemplo: Olá Mundo!" rows="4"></textarea>
             </div>
             <div class="input-group">
+                <label for="decrypt-shift-value">Deslocamento (para Cifra de César):</label>
+                <input type="number" id="decrypt-shift-value" value="3" min="-25" max="25">
+            </div>
+            <div class="input-group">
                 <label for="decrypt-type">Tipo de Criptografia:</label>
                 <select id="decrypt-type">
-                    <option value="caesar">Cifra de César tradicional (deslocamento de 3)</option>
+                    <option value="caesar">Cifra de César tradicional</option>
                     <option value="random">Criptografia aleatória</option>
                 </select>
             </div>

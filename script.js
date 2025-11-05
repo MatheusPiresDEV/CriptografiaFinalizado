@@ -1,4 +1,4 @@
-// Função para criptografar usando a cifra de César com deslocamento de 3
+// Função para criptografar usando a cifra de César com deslocamento personalizado
 function caesarCipher(text, shift = 3) {
     let result = '';
     for (let char of text) {
@@ -53,7 +53,7 @@ function randomCipher(text) {
     return { result, map: substitutionMap };
 }
 
-// Função para descriptografar usando a cifra de César com deslocamento de -3
+// Função para descriptografar usando a cifra de César com deslocamento personalizado
 function caesarDecipher(text, shift = -3) {
     return caesarCipher(text, shift);
 }
@@ -64,22 +64,22 @@ function randomDecipher(text) {
 }
 
 // Função para gerar explicação passo a passo
-function generateExplanation(originalText, encryptionType = 'caesar') {
+function generateExplanation(originalText, encryptionType = 'caesar', shift = 3) {
     if (!originalText.trim()) {
         return '<p>Aguarde uma entrada para ver a explicação passo a passo.</p>';
     }
 
     if (encryptionType === 'caesar') {
-        let explanation = '<h3>Explicação Passo a Passo (Cifra de César):</h3><ul>';
-        const encrypted = caesarCipher(originalText);
+        let explanation = `<h3>Explicação Passo a Passo (Cifra de César com deslocamento ${shift}):</h3><ul>`;
+        const encrypted = caesarCipher(originalText, shift);
 
         for (let i = 0; i < originalText.length; i++) {
             const originalChar = originalText[i];
             const encryptedChar = encrypted[i];
             if (originalChar.match(/[a-z]/i)) {
-                explanation += `<li>"${originalChar}" → "${encryptedChar}" (deslocamento de 3 posições)</li>`;
+                explanation += `<li>"${originalChar}" → "${encryptedChar}" (deslocamento de ${shift} posições)</li>`;
             } else if (originalChar.match(/[0-9]/)) {
-                explanation += `<li>"${originalChar}" → "${encryptedChar}" (deslocamento de 3 unidades, rotação circular)</li>`;
+                explanation += `<li>"${originalChar}" → "${encryptedChar}" (deslocamento de ${shift} unidades, rotação circular)</li>`;
             } else {
                 explanation += `<li>"${originalChar}" → "${encryptedChar}" (caractere não alfanumérico, permanece inalterado)</li>`;
             }
@@ -115,22 +115,22 @@ function generateExplanation(originalText, encryptionType = 'caesar') {
 }
 
 // Função para gerar explicação passo a passo da descriptografia
-function generateDecryptExplanation(decryptText, decryptType = 'caesar') {
+function generateDecryptExplanation(decryptText, decryptType = 'caesar', shift = 3) {
     if (!decryptText.trim()) {
         return '<p>Aguarde uma entrada para ver a explicação passo a passo da descriptografia.</p>';
     }
 
     if (decryptType === 'caesar') {
-        let explanation = '<h3>Explicação Passo a Passo (Descriptografia César):</h3><ul>';
-        const decrypted = caesarDecipher(decryptText);
+        let explanation = `<h3>Explicação Passo a Passo (Descriptografia César com deslocamento ${-shift}):</h3><ul>`;
+        const decrypted = caesarDecipher(decryptText, -shift);
 
         for (let i = 0; i < decryptText.length; i++) {
             const originalChar = decryptText[i];
             const decryptedChar = decrypted[i];
             if (originalChar.match(/[a-z]/i)) {
-                explanation += `<li>"${originalChar}" → "${decryptedChar}" (deslocamento de -3 posições)</li>`;
+                explanation += `<li>"${originalChar}" → "${decryptedChar}" (deslocamento de ${-shift} posições)</li>`;
             } else if (originalChar.match(/[0-9]/)) {
-                explanation += `<li>"${originalChar}" → "${decryptedChar}" (deslocamento de -3 unidades, rotação circular)</li>`;
+                explanation += `<li>"${originalChar}" → "${decryptedChar}" (deslocamento de ${-shift} unidades, rotação circular)</li>`;
             } else {
                 explanation += `<li>"${originalChar}" → "${decryptedChar}" (caractere não alfanumérico, permanece inalterado)</li>`;
             }
@@ -161,15 +161,17 @@ function switchTab(tabName) {
     if (tabName === 'how-it-works') {
         const inputText = document.getElementById('input-text').value;
         const encryptionType = document.getElementById('encryption-type').value;
+        const shiftValue = parseInt(document.getElementById('shift-value').value);
         updateExampleText(inputText);
-        document.getElementById('explanation').innerHTML = generateExplanation(inputText, encryptionType);
+        document.getElementById('explanation').innerHTML = generateExplanation(inputText, encryptionType, shiftValue);
     }
 
     // Se a aba "Como foi Descriptografado" for selecionada, atualiza a explicação da descriptografia
     if (tabName === 'how-decrypt-works') {
         const decryptText = document.getElementById('decrypt-input-text').value;
         const decryptType = document.getElementById('decrypt-type').value;
-        document.getElementById('decrypt-explanation').innerHTML = generateDecryptExplanation(decryptText, decryptType);
+        const decryptShiftValue = parseInt(document.getElementById('decrypt-shift-value').value);
+        document.getElementById('decrypt-explanation').innerHTML = generateDecryptExplanation(decryptText, decryptType, decryptShiftValue);
     }
 }
 
@@ -186,6 +188,7 @@ function updateExampleText(inputText) {
 // Função para descriptografar e exibir resultado
 function decryptText() {
     const inputText = document.getElementById('decrypt-input-text').value.trim();
+    const decryptShiftValue = parseInt(document.getElementById('decrypt-shift-value').value);
     const decryptType = document.getElementById('decrypt-type').value;
     const errorMessage = document.getElementById('decrypt-error-message');
     const resultDiv = document.getElementById('decrypt-result');
@@ -198,13 +201,20 @@ function decryptText() {
         return;
     }
 
+    if (decryptShiftValue === 0) {
+        errorMessage.textContent = 'O deslocamento precisa ser diferente de zero.';
+        errorMessage.classList.remove('hidden');
+        resultDiv.classList.add('hidden');
+        return;
+    }
+
     // Oculta erro e exibe resultado
     errorMessage.classList.add('hidden');
     resultDiv.classList.remove('hidden');
 
     let result;
     if (decryptType === 'caesar') {
-        result = caesarDecipher(inputText);
+        result = caesarDecipher(inputText, -decryptShiftValue);
         decryptedText.textContent = `Descriptografado: ${result}`;
     } else if (decryptType === 'random') {
         result = randomDecipher(inputText);
@@ -213,13 +223,14 @@ function decryptText() {
 
     // Atualiza a explicação na aba "Como foi Descriptografado" se estiver ativa
     if (document.getElementById('how-decrypt-works').classList.contains('active')) {
-        document.getElementById('decrypt-explanation').innerHTML = generateDecryptExplanation(inputText, decryptType);
+        document.getElementById('decrypt-explanation').innerHTML = generateDecryptExplanation(inputText, decryptType, decryptShiftValue);
     }
 }
 
 // Função para criptografar e exibir resultado
 function encryptText() {
     const inputText = document.getElementById('input-text').value.trim();
+    const shiftValue = parseInt(document.getElementById('shift-value').value);
     const encryptionType = document.getElementById('encryption-type').value;
     const errorMessage = document.getElementById('error-message');
     const resultDiv = document.getElementById('result');
@@ -232,13 +243,20 @@ function encryptText() {
         return;
     }
 
+    if (shiftValue === 0) {
+        errorMessage.textContent = 'O deslocamento precisa ser diferente de zero.';
+        errorMessage.classList.remove('hidden');
+        resultDiv.classList.add('hidden');
+        return;
+    }
+
     // Oculta erro e exibe resultado
     errorMessage.classList.add('hidden');
     resultDiv.classList.remove('hidden');
 
     let result;
     if (encryptionType === 'caesar') {
-        result = caesarCipher(inputText);
+        result = caesarCipher(inputText, shiftValue);
         encryptedText.textContent = `Cifra de César: ${result}`;
     } else if (encryptionType === 'random') {
         const { result: randomResult, map } = randomCipher(inputText);
@@ -251,7 +269,7 @@ function encryptText() {
     // Atualiza a explicação na aba "Como Funciona" se estiver ativa
     if (document.getElementById('how-it-works').classList.contains('active')) {
         updateExampleText(inputText);
-        document.getElementById('explanation').innerHTML = generateExplanation(inputText, encryptionType);
+        document.getElementById('explanation').innerHTML = generateExplanation(inputText, encryptionType, shiftValue);
     }
 }
 
@@ -301,8 +319,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('input-text').addEventListener('input', function() {
         if (document.getElementById('how-it-works').classList.contains('active')) {
             const encryptionType = document.getElementById('encryption-type').value;
+            const shiftValue = parseInt(document.getElementById('shift-value').value);
             updateExampleText(this.value);
-            document.getElementById('explanation').innerHTML = generateExplanation(this.value, encryptionType);
+            document.getElementById('explanation').innerHTML = generateExplanation(this.value, encryptionType, shiftValue);
         }
     });
 
@@ -310,8 +329,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('encryption-type').addEventListener('change', function() {
         if (document.getElementById('how-it-works').classList.contains('active')) {
             const inputText = document.getElementById('input-text').value;
+            const shiftValue = parseInt(document.getElementById('shift-value').value);
             updateExampleText(inputText);
-            document.getElementById('explanation').innerHTML = generateExplanation(inputText, this.value);
+            document.getElementById('explanation').innerHTML = generateExplanation(inputText, this.value, shiftValue);
         }
     });
 
@@ -319,7 +339,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('decrypt-input-text').addEventListener('input', function() {
         if (document.getElementById('how-decrypt-works').classList.contains('active')) {
             const decryptType = document.getElementById('decrypt-type').value;
-            document.getElementById('decrypt-explanation').innerHTML = generateDecryptExplanation(this.value, decryptType);
+            const decryptShiftValue = parseInt(document.getElementById('decrypt-shift-value').value);
+            document.getElementById('decrypt-explanation').innerHTML = generateDecryptExplanation(this.value, decryptType, decryptShiftValue);
         }
     });
 
@@ -327,7 +348,8 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('decrypt-type').addEventListener('change', function() {
         if (document.getElementById('how-decrypt-works').classList.contains('active')) {
             const decryptText = document.getElementById('decrypt-input-text').value;
-            document.getElementById('decrypt-explanation').innerHTML = generateDecryptExplanation(decryptText, this.value);
+            const decryptShiftValue = parseInt(document.getElementById('decrypt-shift-value').value);
+            document.getElementById('decrypt-explanation').innerHTML = generateDecryptExplanation(decryptText, this.value, decryptShiftValue);
         }
     });
 });
