@@ -6,13 +6,13 @@ function caesarCipher(text, shift = 3) {
             // Determina se é maiúscula ou minúscula
             const isUpperCase = char === char.toUpperCase();
             const base = isUpperCase ? 'A'.charCodeAt(0) : 'a'.charCodeAt(0);
-            // Aplica o deslocamento
-            const shifted = ((char.charCodeAt(0) - base + shift) % 26) + base;
+            // Aplica o deslocamento com rotação circular
+            const shifted = (((char.charCodeAt(0) - base + shift) % 26 + 26) % 26) + base;
             result += String.fromCharCode(shifted);
         } else if (char.match(/[0-9]/)) {
-            // Processa dígitos com deslocamento circular de 3
+            // Processa dígitos com deslocamento circular
             const digit = parseInt(char);
-            const shiftedDigit = (digit + shift) % 10;
+            const shiftedDigit = ((digit + shift) % 10 + 10) % 10;
             result += shiftedDigit.toString();
         } else {
             // Mantém caracteres não alfanuméricos inalterados
