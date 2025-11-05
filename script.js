@@ -327,6 +327,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Atualiza a explicação quando o tipo de criptografia muda
     document.getElementById('encryption-type').addEventListener('change', function() {
+        if (this.value === 'caesar') {
+            document.getElementById('shift-value').value = 3;
+        }
         if (document.getElementById('how-it-works').classList.contains('active')) {
             const inputText = document.getElementById('input-text').value;
             const shiftValue = parseInt(document.getElementById('shift-value').value);
