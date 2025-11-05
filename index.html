@@ -47,6 +47,19 @@
                 <h3>Resultado:</h3>
                 <p id="encrypted-text"></p>
             </div>
+            <div id="possibilities" class="possibilities hidden">
+                <h3>Possibilidades:</h3>
+                <p>Quantas possibilidades: <span id="num-possibilities"></span></p>
+                <p>Possibilidade de acertar em %: <span id="chance-percent"></span></p>
+                <div class="legend">
+                    <h4>Legenda de Probabilidade:</h4>
+                    <ul>
+                        <li><span class="legend-color low"></span> Menos de 1%: Baixa chance de acerto (mais seguro)</li>
+                        <li><span class="legend-color medium"></span> 1% - 9.99%: Chance moderada de acerto</li>
+                        <li><span class="legend-color high"></span> 10% ou mais: Alta chance de acerto (menos seguro)</li>
+                    </ul>
+                </div>
+            </div>
         </section>
 
         <section id="decrypt" class="tab-content">

@@ -63,6 +63,29 @@ function randomDecipher(text) {
     return 'Este tipo de criptografia não pode ser revertido, pois utiliza um mapa de substituição aleatório único que não é armazenado.';
 }
 
+// Função para calcular possibilidades baseado no tipo de criptografia
+function calculatePossibilities(shiftValue, text, encryptionType) {
+    if (encryptionType === 'caesar') {
+        // Para César, o cálculo é baseado no número de dígitos do deslocamento
+        const shiftStr = Math.abs(shiftValue).toString();
+        const numDigits = shiftStr.length;
+        // Combinações possíveis = 10^n onde n é o número de dígitos
+        return Math.pow(10, numDigits);
+    } else if (encryptionType === 'random') {
+        // Para aleatória, possibilidades são baseadas no número de caracteres únicos no texto
+        const uniqueChars = new Set(text.split('')).size;
+        // Número de permutações possíveis dos caracteres únicos
+        let possibilities = 1;
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+        const availableChars = chars.length;
+        for (let i = 0; i < uniqueChars; i++) {
+            possibilities *= (availableChars - i);
+        }
+        return possibilities;
+    }
+    return 1;
+}
+
 // Função para gerar explicação passo a passo
 function generateExplanation(originalText, encryptionType = 'caesar', shift = 3) {
     if (!originalText.trim()) {
@@ -265,6 +288,29 @@ function encryptText() {
         // Armazena o mapa para a explicação
         window.currentRandomMap = map;
     }
+
+    // Calcula possibilidades baseado no deslocamento e texto
+    const numPossibilities = calculatePossibilities(shiftValue, inputText, encryptionType);
+    const chancePercent = (1 / numPossibilities * 100).toFixed(2);
+
+    // Determina a cor baseada na probabilidade
+    let colorClass = '';
+    if (chancePercent < 1) {
+        colorClass = 'low';
+    } else if (chancePercent >= 1 && chancePercent < 10) {
+        colorClass = 'medium';
+    } else {
+        colorClass = 'high';
+    }
+
+    // Exibe possibilidades
+    const possibilitiesDiv = document.getElementById('possibilities');
+    const numPossibilitiesSpan = document.getElementById('num-possibilities');
+    const chancePercentSpan = document.getElementById('chance-percent');
+    numPossibilitiesSpan.textContent = numPossibilities;
+    chancePercentSpan.textContent = chancePercent + '%';
+    chancePercentSpan.className = `chance-percent ${colorClass}`;
+    possibilitiesDiv.classList.remove('hidden');
 
     // Atualiza a explicação na aba "Como Funciona" se estiver ativa
     if (document.getElementById('how-it-works').classList.contains('active')) {

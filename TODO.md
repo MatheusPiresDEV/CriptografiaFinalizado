@@ -22,3 +22,12 @@
 - [x] Atualizar generateExplanation para incluir explicação passo a passo para dígitos em criptografia César
 - [x] Atualizar generateDecryptExplanation para incluir explicação passo a passo para dígitos em descriptografia César
 - [ ] Testar a funcionalidade com exemplos como 1.25 → 4.58, -12.3 → -45.6, e descriptografia inversa
+
+# TODO - Adicionar Campo de Possibilidades
+
+- [x] Adicionar seção "Possibilidades" no HTML após o resultado da criptografia
+- [x] Adicionar estilos CSS para a seção de possibilidades com design profissional
+- [x] Implementar função calculatePossibilities para calcular o número de possibilidades baseado no tipo de criptografia
+- [x] Calcular e exibir a chance de acertar em %
+- [x] Integrar o cálculo na função encryptText
+- [x] Testar o campo de possibilidades com diferentes textos e tipos de criptografia
